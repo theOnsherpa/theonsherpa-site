@@ -253,6 +253,7 @@ p {
 .video-section,
 .feature-directory,
 .trusted-by,
+.plan-section,
 .service-stack,
 .contact-layout {
   padding: clamp(58px, 9vw, 118px) clamp(20px, 5vw, 72px);
@@ -346,6 +347,61 @@ p {
   font-family: var(--font-sans);
   font-size: 0.86rem;
   font-weight: 650;
+}
+
+.plan-section {
+  align-items: start;
+  display: grid;
+  gap: clamp(28px, 5vw, 72px);
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
+}
+
+.plan-heading {
+  position: sticky;
+  top: 112px;
+}
+
+.plan-heading .button {
+  margin-top: 12px;
+}
+
+.plan-steps {
+  display: grid;
+  gap: 14px;
+}
+
+.plan-steps article {
+  align-items: start;
+  background: var(--paper-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: auto 1fr;
+  padding: clamp(22px, 4vw, 34px);
+}
+
+.plan-steps span {
+  align-items: center;
+  background: var(--brand-green);
+  border-radius: 999px;
+  color: var(--paper-strong);
+  display: inline-flex;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 750;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+}
+
+.plan-steps h3 {
+  font-size: clamp(1.3rem, 2.2vw, 2rem);
+  margin-bottom: 4px;
+}
+
+.plan-steps p {
+  margin-bottom: 0;
 }
 
 @keyframes client-logo-scroll {
@@ -835,6 +891,7 @@ textarea:focus {
   .hero-content,
   .split-section,
   .outcome-band,
+  .plan-section,
   .video-section,
   .contact-layout,
   .service-stack article {
@@ -846,6 +903,10 @@ textarea:focus {
   }
 
   .contact-copy {
+    position: static;
+  }
+
+  .plan-heading {
     position: static;
   }
 }
@@ -870,6 +931,9 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 
+  .plan-steps article {
+    grid-template-columns: 1fr;
+  }
 
   .site-footer nav {
     justify-content: flex-start;
