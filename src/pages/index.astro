@@ -1,0 +1,61 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TrustedBy from "../components/TrustedBy.astro";
+import VideoEmbed from "../components/VideoEmbed.astro";
+---
+
+<BaseLayout
+  title="The Onsherpa | Peak Onshape productivity"
+  description="Onshape consulting, migration, automation, and custom FeatureScript by Evan Reese."
+>
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-copy-block">
+        <p class="eyebrow">Onshape Coaching for Teams</p>
+        <h1>Hi, I’m Evan Reese, The Onsherpa</h1>
+        <p class="hero-copy">
+          Your team's time in Onshape costs a lot more than Onshape itself. The
+          Onsherpa guides you to peak performance, maximizing that valuable time.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="/contact/">Book a free consultation now</a>
+        </div>
+      </div>
+      <div class="hero-video">
+        <VideoEmbed videoId="iz5z9l_YrbE" title="The Onsherpa introduction" />
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div>
+      <p class="section-kicker">When Onshape slows down</p>
+      <h2>If you’re losing time and money on...</h2>
+    </div>
+    <div class="story-list problem-list">
+      <p><span aria-hidden="true">×</span>Making the switch from another CAD system</p>
+      <p><span aria-hidden="true">×</span>Slow models and spinning wheels</p>
+      <p><span aria-hidden="true">×</span>Clunky workarounds</p>
+      <p><span aria-hidden="true">×</span>Disorganized data</p>
+      <p><span aria-hidden="true">×</span>Lack of cohesive practices</p>
+      <p><span aria-hidden="true">×</span>Tedious repetitive work</p>
+    </div>
+  </section>
+
+  <section class="outcome-band">
+    <div>
+      <p class="section-kicker">Guided improvement</p>
+      <h2>The Onsherpa can help you...</h2>
+    </div>
+    <div class="story-list solution-list">
+      <p><span aria-hidden="true">✓</span>Migrate your people (not just your data) to Onshape <em>quickly</em></p>
+      <p><span aria-hidden="true">✓</span>Automate tedious tasks with Featurescript</p>
+      <p><span aria-hidden="true">✓</span>Find your unique best practices</p>
+      <p><span aria-hidden="true">✓</span>Demystify Onshape</p>
+      <p><span aria-hidden="true">✓</span>Ensure high quality CAD from the whole team</p>
+      <p><span aria-hidden="true">✓</span>Upskill your team</p>
+    </div>
+  </section>
+
+  <TrustedBy />
+</BaseLayout>

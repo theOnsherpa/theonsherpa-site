@@ -1,0 +1,59 @@
+---
+import { featureLinks } from "../data/features";
+
+const highlighted = featureLinks.filter((feature) => feature.highlight);
+const remaining = featureLinks.filter((feature) => !feature.highlight);
+---
+
+<section class="feature-directory">
+  <div class="feature-section-heading">
+    <div>
+      <div class="section-kicker">Open-source FeatureScript</div>
+      <h2>Featured tools</h2>
+    </div>
+    <p>
+      GIF slots are built into the catalog now. Add a file path to a feature’s
+      `media` field when a demo is ready.
+    </p>
+  </div>
+  <div class="feature-grid">
+    {
+      highlighted.map((feature) => (
+        <a class="feature-tile" href={feature.href} target="_blank" rel="noreferrer">
+          <div class="feature-media">
+            {
+              feature.media ? (
+                <img src={feature.media} alt={`${feature.name} demo`} loading="lazy" />
+              ) : (
+                <div class="feature-media-placeholder">
+                  <span>{feature.name.slice(0, 2)}</span>
+                </div>
+              )
+            }
+          </div>
+          <div class="feature-card-copy">
+            <div>
+              <span class="feature-category">{feature.category}</span>
+              <h3>{feature.name}</h3>
+            </div>
+            <p>{feature.summary}</p>
+          </div>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 17 17 7M9 7h8v8" />
+          </svg>
+        </a>
+      ))
+    }
+  </div>
+  <h2>More features</h2>
+  <div class="feature-list">
+    {
+      remaining.map((feature) => (
+        <a href={feature.href} target="_blank" rel="noreferrer">
+          <span>{feature.name}</span>
+          <small>{feature.category}</small>
+        </a>
+      ))
+    }
+  </div>
+</section>

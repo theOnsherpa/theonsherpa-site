@@ -1,0 +1,48 @@
+---
+import { clientLogos } from "../data/clients";
+
+const scrollingLogos = [...clientLogos, ...clientLogos];
+---
+
+<section class="trusted-by" aria-labelledby="trusted-by-heading">
+  <div class="trusted-by-inner">
+    <h2 id="trusted-by-heading">I’ve been trusted by</h2>
+    <div class="client-logo-marquee" aria-label="Client logos">
+      <div class="client-logo-track">
+        {
+          scrollingLogos.map((client, index) => {
+            const isDuplicate = index >= clientLogos.length;
+            const content = client.logo?.endsWith(".svg") ? (
+              <span
+                class="client-logo-mask"
+                style={`--logo-url: url("${client.logo}")`}
+                aria-label={isDuplicate ? undefined : client.name}
+              />
+            ) : client.logo ? (
+              <img src={client.logo} alt={isDuplicate ? "" : client.name} loading="lazy" />
+            ) : (
+              <span>{client.name}</span>
+            );
+
+            return client.href ? (
+              <a
+                class="client-logo"
+                href={client.href}
+                target="_blank"
+                rel="noreferrer"
+                aria-hidden={isDuplicate ? "true" : undefined}
+                tabindex={isDuplicate ? "-1" : undefined}
+              >
+                {content}
+              </a>
+            ) : (
+              <div class="client-logo" aria-hidden={isDuplicate ? "true" : undefined}>
+                {content}
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  </div>
+</section>

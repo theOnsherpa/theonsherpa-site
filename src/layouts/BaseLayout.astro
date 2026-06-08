@@ -1,0 +1,65 @@
+---
+import "../styles/global.css";
+
+type Props = {
+  title: string;
+  description: string;
+};
+
+const { title, description } = Astro.props;
+const navItems = [
+  { label: "Home", href: "/" },
+  { label: "Custom Features", href: "/custom-features/" },
+  { label: "Services", href: "/services/" },
+  { label: "Contact", href: "/contact/" },
+];
+const pathname = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#111a1f" />
+    <link rel="icon" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="The Onsherpa home">
+        <img src="/assets/full-logo-black.svg" alt="The Onsherpa" />
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        {
+          navItems.map((item) => (
+            <a
+              href={item.href}
+              class:list={[pathname === item.href && "is-active"]}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+      <a class="header-cta" href="/contact/">Book a free consultation now</a>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div>
+        <strong>The Onsherpa</strong>
+        <p>Onshape strategy, automation, migration, and custom FeatureScript.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        {
+          navItems.map((item) => (
+            <a href={item.href}>{item.label}</a>
+          ))
+        }
+      </nav>
+    </footer>
+  </body>
+</html>

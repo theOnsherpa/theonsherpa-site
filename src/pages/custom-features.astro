@@ -1,0 +1,29 @@
+---
+import FeatureGrid from "../components/FeatureGrid.astro";
+import FallingPrisms from "../components/FallingPrisms.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Custom Features | The Onsherpa"
+  description="Open-source Onshape custom features by Evan Reese, plus custom FeatureScript consulting."
+>
+  <section class="feature-hero">
+    <FallingPrisms />
+    <div class="feature-hero-content">
+      <p class="eyebrow">Custom FeatureScript</p>
+      <h1>Custom features</h1>
+      <p>
+        Onshape’s FeatureScript language can unlock huge productivity gains,
+        letting you expand the core software to meet your specific needs and
+        preferences. These original custom features are open source and free to
+        the Onshape community to use, duplicate, and modify.
+      </p>
+      <div class="page-actions">
+        <a class="button button-primary" href="/contact/">Talk about a custom feature</a>
+      </div>
+    </div>
+  </section>
+
+  <FeatureGrid />
+</BaseLayout>

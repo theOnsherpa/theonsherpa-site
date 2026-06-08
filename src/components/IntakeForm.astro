@@ -1,0 +1,93 @@
+<form class="intake-form" data-intake-form>
+  <div class="form-grid">
+    <label>
+      <span>Name</span>
+      <input name="name" autocomplete="name" required />
+    </label>
+    <label>
+      <span>Email</span>
+      <input name="email" type="email" autocomplete="email" required />
+    </label>
+    <label>
+      <span>Company</span>
+      <input name="company" autocomplete="organization" />
+    </label>
+    <label>
+      <span>Role</span>
+      <input name="role" autocomplete="organization-title" />
+    </label>
+    <label>
+      <span>What do you need help with?</span>
+      <select name="need" required>
+        <option value="">Select one</option>
+        <option>Onshape migration</option>
+        <option>Custom FeatureScript</option>
+        <option>Team workflow and standards</option>
+        <option>Model performance</option>
+        <option>Not sure yet</option>
+      </select>
+    </label>
+    <label>
+      <span>Timeline</span>
+      <select name="timeline">
+        <option>Soon</option>
+        <option>This month</option>
+        <option>This quarter</option>
+        <option>Exploring options</option>
+      </select>
+    </label>
+  </div>
+  <label>
+    <span>What is going on?</span>
+    <textarea name="message" rows="6" required></textarea>
+  </label>
+  <input name="source" type="hidden" value="theonsherpa.com contact form" />
+  <button class="button button-primary" type="submit">Send intake</button>
+  <p class="form-status" data-form-status role="status"></p>
+</form>
+
+<script>
+  const forms = document.querySelectorAll("[data-intake-form]");
+
+  forms.forEach((form) => {
+    if (!(form instanceof HTMLFormElement)) return;
+
+    const status = form.querySelector("[data-form-status]");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const submitButton = form.querySelector("button[type='submit']");
+      if (!(submitButton instanceof HTMLButtonElement)) return;
+
+      submitButton.disabled = true;
+      if (status) status.textContent = "Sending...";
+
+      const payload = Object.fromEntries(new FormData(form).entries());
+
+      try {
+        const response = await fetch("/api/intake", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        const result = (await response.json()) as { message?: string };
+        if (!response.ok) {
+          throw new Error(result.message || "Something went wrong.");
+        }
+
+        form.reset();
+        if (status) status.textContent = "Thanks. Your note landed, and I will follow up soon.";
+      } catch (error) {
+        if (status) {
+          status.textContent =
+            error instanceof Error
+              ? error.message
+              : "The form could not be sent. Please email Evan directly.";
+        }
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+  });
+</script>

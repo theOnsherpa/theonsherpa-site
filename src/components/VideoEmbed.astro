@@ -1,0 +1,51 @@
+---
+type Props = {
+  videoId: string;
+  title: string;
+};
+
+const { videoId, title } = Astro.props;
+const thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+---
+
+<div class="video-embed" data-video-embed data-video-id={videoId} data-title={title}>
+  <button class="video-poster" type="button" aria-label={`Play video: ${title}`}>
+    <img src={thumbnail} alt="" loading="eager" />
+    <span class="video-play" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+    </span>
+  </button>
+  <iframe
+    title={title}
+    src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&playsinline=1`}
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen
+    referrerpolicy="strict-origin-when-cross-origin"
+  ></iframe>
+</div>
+
+<script>
+  const embeds = document.querySelectorAll("[data-video-embed]");
+
+  embeds.forEach((embed) => {
+    if (!(embed instanceof HTMLElement)) return;
+
+    const button = embed.querySelector("button");
+    const iframe = embed.querySelector("iframe");
+
+    button?.addEventListener("click", () => {
+      embed.classList.add("is-playing");
+      iframe?.contentWindow?.postMessage(
+        JSON.stringify({
+          event: "command",
+          func: "playVideo",
+          args: [],
+        }),
+        "https://www.youtube.com",
+      );
+      iframe?.focus();
+    });
+  });
+</script>

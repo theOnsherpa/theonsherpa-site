@@ -1,0 +1,22 @@
+---
+import IntakeForm from "../components/IntakeForm.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Contact | The Onsherpa"
+  description="Book a free consultation with Evan Reese about Onshape consulting, migration, or custom FeatureScript."
+>
+  <section class="contact-layout">
+    <div class="contact-copy">
+      <p class="eyebrow">Contact</p>
+      <h1>Tell me what is slowing your team down.</h1>
+      <p>
+        Share a little context about your Onshape setup, the friction you are
+        seeing, and what kind of help would be useful. Submissions go directly
+        into the Notion CRM behind the scenes.
+      </p>
+    </div>
+    <IntakeForm />
+  </section>
+</BaseLayout>
