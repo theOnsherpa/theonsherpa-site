@@ -16,4 +16,5 @@ export const clientLogos: ClientLogo[] = [
   { name: "Sonos", logo: "/clients/Sonos.svg" },
   { name: "Tesla", logo: "/clients/Tesla.svg" },
   { name: "Vanderbilt University", logo: "/clients/Vanderbilt University.svg" },
+  { name: "Vessev", logo: "/clients/Vessev.svg" },
 ];
