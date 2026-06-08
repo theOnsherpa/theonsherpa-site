@@ -326,8 +326,8 @@ p {
 
 .client-logo img {
   filter: grayscale(1) brightness(0) invert(0.92);
-  max-height: calc(42px * var(--logo-scale, 1));
-  max-width: calc(150px * var(--logo-scale, 1));
+  max-height: 42px;
+  max-width: 150px;
   object-fit: contain;
   opacity: 0.9;
 }
@@ -335,10 +335,10 @@ p {
 .client-logo-mask {
   background: rgba(247, 248, 245, 0.9);
   display: block;
-  height: calc(42px * var(--logo-scale, 1));
+  height: 42px;
   mask: var(--logo-url) center / contain no-repeat;
   -webkit-mask: var(--logo-url) center / contain no-repeat;
-  width: calc(150px * var(--logo-scale, 1));
+  width: 150px;
 }
 
 .client-logo span {
