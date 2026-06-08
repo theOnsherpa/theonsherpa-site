@@ -12,10 +12,11 @@ const scrollingLogos = [...clientLogos, ...clientLogos];
         {
           scrollingLogos.map((client, index) => {
             const isDuplicate = index >= clientLogos.length;
+            const style = `--logo-url: url("${client.logo}"); --logo-scale: ${client.scale ?? 1}`;
             const content = client.logo?.endsWith(".svg") ? (
               <span
                 class="client-logo-mask"
-                style={`--logo-url: url("${client.logo}")`}
+                style={style}
                 aria-label={isDuplicate ? undefined : client.name}
               />
             ) : client.logo ? (
