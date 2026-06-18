@@ -1,29 +1,76 @@
 ---
 import { featureLinks } from "../data/features";
 
-const highlighted = featureLinks.filter((feature) => feature.highlight);
-const remaining = featureLinks.filter((feature) => !feature.highlight);
+const featuredTag = "Highlight feature";
+const tagLabel = (tag: string) => (tag === featuredTag ? "Featured Tools" : tag);
+const isVideo = (media?: string) => media?.endsWith(".mp4") || media?.endsWith(".webm");
+const allTags = [
+  featuredTag,
+  ...[...new Set(featureLinks.flatMap((feature) => feature.tags))]
+    .filter((tag) => tag !== featuredTag)
+    .sort((a, b) => a.localeCompare(b)),
+];
+const featuredCount = featureLinks.filter((feature) => feature.tags.includes(featuredTag)).length;
 ---
 
 <section class="feature-directory">
   <div class="feature-section-heading">
     <div>
       <div class="section-kicker">Open-source FeatureScript</div>
-      <h2>Featured tools</h2>
+      <h2>Feature catalog</h2>
     </div>
-    <p>
-      GIF slots are built into the catalog now. Add a file path to a feature’s
-      `media` field when a demo is ready.
-    </p>
   </div>
-  <div class="feature-grid">
+
+  <div class="feature-filter" data-feature-filter>
+    <div>
+      <span class="feature-filter-label">Filter by tag</span>
+      <p data-feature-count aria-live="polite">{featuredCount} features shown</p>
+    </div>
+    <div class="feature-filter-tags" aria-label="Feature filters">
+      <button type="button" data-filter-reset aria-pressed="false">All</button>
+      {
+        allTags.map((tag) => (
+          <button
+            class:list={[tag === featuredTag && "is-active"]}
+            type="button"
+            data-filter-tag={tag}
+            aria-pressed={tag === featuredTag ? "true" : "false"}
+          >
+            {tagLabel(tag)}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="feature-grid" data-feature-section>
     {
-      highlighted.map((feature) => (
-        <a class="feature-tile" href={feature.href} target="_blank" rel="noreferrer">
+      featureLinks.map((feature) => (
+        <a
+          class="feature-tile"
+          href={feature.href}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`Open ${feature.name} in Onshape (opens in a new tab)`}
+          data-feature-card
+          data-tags={feature.tags.join("|")}
+        >
           <div class="feature-media">
             {
-              feature.media ? (
-                <img src={feature.media} alt={`${feature.name} demo`} loading="lazy" />
+              isVideo(feature.media) ? (
+                <video
+                  src={feature.media}
+                  aria-hidden="true"
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                  tabindex="-1"
+                  data-feature-preview
+                />
+              ) : feature.media ? (
+                <img src={feature.media} alt="" loading="lazy" />
               ) : (
                 <div class="feature-media-placeholder">
                   <span>{feature.name.slice(0, 2)}</span>
@@ -33,27 +80,112 @@ const remaining = featureLinks.filter((feature) => !feature.highlight);
           </div>
           <div class="feature-card-copy">
             <div>
-              <span class="feature-category">{feature.category}</span>
               <h3>{feature.name}</h3>
             </div>
-            <p>{feature.summary}</p>
+            {feature.summary && <p>{feature.summary}</p>}
+            {
+              feature.tags.length > 0 && (
+                <div class="feature-tags" aria-label={`${feature.name} tags`}>
+                  {feature.tags.map((tag) => <span>{tagLabel(tag)}</span>)}
+                </div>
+              )
+            }
           </div>
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M7 17 17 7M9 7h8v8" />
-          </svg>
         </a>
       ))
     }
   </div>
-  <h2>More features</h2>
-  <div class="feature-list">
-    {
-      remaining.map((feature) => (
-        <a href={feature.href} target="_blank" rel="noreferrer">
-          <span>{feature.name}</span>
-          <small>{feature.category}</small>
-        </a>
-      ))
-    }
-  </div>
+  <p class="feature-empty" data-feature-empty hidden>
+    No features match those tags yet. Try fewer filters.
+  </p>
 </section>
+
+<script>
+  const filters = document.querySelector("[data-feature-filter]");
+
+  if (filters instanceof HTMLElement) {
+    const tagButtons = [...filters.querySelectorAll("[data-filter-tag]")];
+    const resetButton = filters.querySelector("[data-filter-reset]");
+    const count = filters.querySelector("[data-feature-count]");
+    const cards = [...document.querySelectorAll("[data-feature-card]")];
+    const sections = [...document.querySelectorAll("[data-feature-section]")];
+    const empty = document.querySelector("[data-feature-empty]");
+    const activeTags = new Set<string>(["Highlight feature"]);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const syncPreviewMotion = () => {
+      document.querySelectorAll("[data-feature-preview]").forEach((preview) => {
+        if (!(preview instanceof HTMLVideoElement)) return;
+        if (reduceMotion.matches) {
+          preview.pause();
+          preview.removeAttribute("autoplay");
+        }
+      });
+    };
+
+    const updateFilters = () => {
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        if (!(card instanceof HTMLElement)) return;
+        const cardTags = (card.dataset.tags || "").split("|");
+        const matches =
+          activeTags.size === 0 || cardTags.some((tag) => activeTags.has(tag));
+        card.hidden = !matches;
+        if (matches) visibleCount += 1;
+      });
+
+      sections.forEach((section) => {
+        if (!(section instanceof HTMLElement)) return;
+        const hasVisibleCards = [...section.querySelectorAll("[data-feature-card]")].some(
+          (card) => card instanceof HTMLElement && !card.hidden,
+        );
+        section.hidden = !hasVisibleCards;
+      });
+
+      tagButtons.forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        const isActive = activeTags.has(button.dataset.filterTag || "");
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+
+      if (resetButton instanceof HTMLButtonElement) {
+        const isActive = activeTags.size === 0;
+        resetButton.classList.toggle("is-active", isActive);
+        resetButton.setAttribute("aria-pressed", String(isActive));
+      }
+
+      if (count) {
+        count.textContent = `${visibleCount} feature${visibleCount === 1 ? "" : "s"} shown`;
+      }
+
+      if (empty instanceof HTMLElement) {
+        empty.hidden = visibleCount !== 0;
+      }
+    };
+
+    tagButtons.forEach((button) => {
+      if (!(button instanceof HTMLButtonElement)) return;
+      button.addEventListener("click", () => {
+        const tag = button.dataset.filterTag;
+        if (!tag) return;
+        if (activeTags.has(tag)) {
+          activeTags.delete(tag);
+        } else {
+          activeTags.add(tag);
+        }
+        updateFilters();
+      });
+    });
+
+    resetButton?.addEventListener("click", () => {
+      activeTags.clear();
+      updateFilters();
+    });
+
+    reduceMotion.addEventListener("change", syncPreviewMotion);
+    syncPreviewMotion();
+    updateFilters();
+  }
+</script>

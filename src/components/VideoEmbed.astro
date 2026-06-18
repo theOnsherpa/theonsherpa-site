@@ -1,29 +1,22 @@
 ---
 type Props = {
-  videoId: string;
+  src: string;
   title: string;
 };
 
-const { videoId, title } = Astro.props;
-const thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+const { src, title } = Astro.props;
 ---
 
-<div class="video-embed" data-video-embed data-video-id={videoId} data-title={title}>
-  <button class="video-poster" type="button" aria-label={`Play video: ${title}`}>
-    <img src={thumbnail} alt="" loading="eager" />
-    <span class="video-play" aria-hidden="true">
-      <svg viewBox="0 0 24 24">
-        <path d="M8 5v14l11-7z" />
-      </svg>
-    </span>
+<div class="video-embed" data-video-embed>
+  <video src={src} title={title} preload="metadata" playsinline aria-describedby="intro-video-caption-note"></video>
+  <button class="video-play" type="button" aria-label={`Play video: ${title}`}>
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M8 5v14l11-7z" />
+    </svg>
   </button>
-  <iframe
-    title={title}
-    src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&playsinline=1`}
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    allowfullscreen
-    referrerpolicy="strict-origin-when-cross-origin"
-  ></iframe>
+  <p class="sr-only" id="intro-video-caption-note">
+    Captions will be added when the final introduction video is available.
+  </p>
 </div>
 
 <script>
@@ -32,20 +25,15 @@ const thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
   embeds.forEach((embed) => {
     if (!(embed instanceof HTMLElement)) return;
 
-    const button = embed.querySelector("button");
-    const iframe = embed.querySelector("iframe");
+    const video = embed.querySelector("video");
+    const playButton = embed.querySelector("button");
 
-    button?.addEventListener("click", () => {
+    playButton?.addEventListener("click", async () => {
+      if (!(video instanceof HTMLVideoElement)) return;
+      video.controls = true;
       embed.classList.add("is-playing");
-      iframe?.contentWindow?.postMessage(
-        JSON.stringify({
-          event: "command",
-          func: "playVideo",
-          args: [],
-        }),
-        "https://www.youtube.com",
-      );
-      iframe?.focus();
+      await video.play();
+      video.focus();
     });
   });
 </script>

@@ -31,6 +31,7 @@ const scrollingLogos = [...clientLogos, ...clientLogos];
                 target="_blank"
                 rel="noreferrer"
                 aria-hidden={isDuplicate ? "true" : undefined}
+                aria-label={isDuplicate ? undefined : `${client.name} (opens in a new tab)`}
                 tabindex={isDuplicate ? "-1" : undefined}
               >
                 {content}

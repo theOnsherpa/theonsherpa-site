@@ -1,109 +1,116 @@
 type Env = {
-  NOTION_TOKEN?: string;
   NOTION_DATABASE_ID?: string;
+  NOTION_TOKEN?: string;
   NOTION_VERSION?: string;
 };
 
 type IntakePayload = {
-  name?: unknown;
-  email?: unknown;
-  company?: unknown;
-  role?: unknown;
-  need?: unknown;
-  timeline?: unknown;
-  message?: unknown;
-  source?: unknown;
+  company?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  message?: string;
+  onshapeTeamSize?: string;
+  phone?: string;
 };
 
-const jsonHeaders = { "Content-Type": "application/json" };
+type NotionProperty =
+  | { title: Array<{ text: { content: string } }> }
+  | { email: string }
+  | { number: number | null }
+  | { phone_number: string | null }
+  | { rich_text: Array<{ text: { content: string } }> };
 
-const textValue = (value: unknown) => (typeof value === "string" ? value.trim() : "");
-const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-
-const richText = (content: string) => ({
-  rich_text: [{ type: "text", text: { content } }],
-});
-
-const select = (name: string) => ({
-  select: name ? { name } : null,
-});
-
-const buildNotionProperties = (payload: Required<Record<keyof IntakePayload, string>>) => ({
-  Name: {
-    title: [{ type: "text", text: { content: payload.name } }],
-  },
-  Email: { email: payload.email },
-  Company: richText(payload.company),
-  Role: richText(payload.role),
-  Need: select(payload.need),
-  Timeline: select(payload.timeline),
-  Message: richText(payload.message),
-  Source: richText(payload.source),
-  "Submitted At": {
-    date: { start: new Date().toISOString() },
-  },
-});
-
-export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
-  if (!env.NOTION_TOKEN || !env.NOTION_DATABASE_ID) {
-    return Response.json(
-      { message: "The intake form is not configured yet." },
-      { status: 500, headers: jsonHeaders },
-    );
-  }
-
-  let body: IntakePayload;
-  try {
-    body = await request.json();
-  } catch {
-    return Response.json(
-      { message: "Please submit the form again." },
-      { status: 400, headers: jsonHeaders },
-    );
-  }
-
-  const payload = {
-    name: textValue(body.name),
-    email: textValue(body.email),
-    company: textValue(body.company),
-    role: textValue(body.role),
-    need: textValue(body.need),
-    timeline: textValue(body.timeline),
-    message: textValue(body.message),
-    source: textValue(body.source) || "theonsherpa.com contact form",
-  };
-
-  if (!payload.name || !isEmail(payload.email) || !payload.need || !payload.message) {
-    return Response.json(
-      { message: "Please fill out name, email, need, and message." },
-      { status: 400, headers: jsonHeaders },
-    );
-  }
-
-  const notionResponse = await fetch("https://api.notion.com/v1/pages", {
-    method: "POST",
+const json = (body: unknown, init?: ResponseInit) =>
+  new Response(JSON.stringify(body), {
+    ...init,
     headers: {
-      Authorization: `Bearer ${env.NOTION_TOKEN}`,
       "Content-Type": "application/json",
-      "Notion-Version": env.NOTION_VERSION || "2022-06-28",
+      ...init?.headers,
     },
-    body: JSON.stringify({
-      parent: { database_id: env.NOTION_DATABASE_ID },
-      properties: buildNotionProperties(payload),
-    }),
   });
 
-  if (!notionResponse.ok) {
-    const errorText = await notionResponse.text();
-    console.error("Notion intake submission failed", errorText);
-    return Response.json(
-      { message: "The form could not reach Notion. Please email Evan directly." },
-      { status: 502, headers: jsonHeaders },
+const asString = (value: unknown) => (typeof value === "string" ? value.trim() : "");
+
+const richText = (content: string): NotionProperty => ({
+  rich_text: content ? [{ text: { content } }] : [],
+});
+
+const title = (content: string): NotionProperty => ({
+  title: [{ text: { content } }],
+});
+
+const numberValue = (content: string): NotionProperty => {
+  if (!content) return { number: null };
+
+  const value = Number(content);
+  return Number.isFinite(value) ? { number: value } : { number: null };
+};
+
+export const onRequestPost: PagesFunction<Env> = async ({ env, request }) => {
+  const token = env.NOTION_TOKEN;
+  const databaseId = env.NOTION_DATABASE_ID;
+  const notionVersion = env.NOTION_VERSION || "2022-06-28";
+
+  if (!token || !databaseId) {
+    return json({ message: "The contact form is not configured yet." }, { status: 500 });
+  }
+
+  let payload: IntakePayload;
+
+  try {
+    payload = (await request.json()) as IntakePayload;
+  } catch {
+    return json({ message: "The form submission could not be read." }, { status: 400 });
+  }
+
+  const firstName = asString(payload.firstName);
+  const lastName = asString(payload.lastName);
+  const email = asString(payload.email);
+  const message = asString(payload.message);
+  const company = asString(payload.company);
+  const phone = asString(payload.phone);
+  const onshapeTeamSize = asString(payload.onshapeTeamSize);
+
+  if (!firstName || !lastName || !email || !message) {
+    return json({ message: "Please complete the required fields." }, { status: 400 });
+  }
+
+  const properties: Record<string, NotionProperty> = {
+    "First name": title(firstName),
+    "Last name": richText(lastName),
+    "Company name": richText(company),
+    Email: { email },
+    Phone: { phone_number: phone || null },
+    "Onshape team size": numberValue(onshapeTeamSize),
+    "What’s on your mind?": richText(message),
+  };
+
+  const response = await fetch("https://api.notion.com/v1/pages", {
+    body: JSON.stringify({
+      parent: { database_id: databaseId },
+      properties,
+    }),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "Notion-Version": notionVersion,
+    },
+    method: "POST",
+  });
+
+  if (!response.ok) {
+    const error = (await response.json().catch(() => null)) as { message?: string } | null;
+    console.error("Notion intake submission failed", error || response.statusText);
+
+    return json(
+      { message: "The form could not be sent. Please email Evan directly." },
+      { status: 502 },
     );
   }
 
-  return Response.json({ ok: true }, { headers: jsonHeaders });
+  return json({ message: "Thanks. Your note landed, and I will follow up soon." });
 };
 
-export const onRequest: PagesFunction<Env> = async () =>
-  Response.json({ message: "Method not allowed" }, { status: 405, headers: jsonHeaders });
+export const onRequestGet: PagesFunction<Env> = () =>
+  json({ message: "Method not allowed." }, { status: 405 });

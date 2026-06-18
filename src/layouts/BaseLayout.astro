@@ -27,6 +27,7 @@ const pathname = Astro.url.pathname;
     <title>{title}</title>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="site-header">
       <a class="brand" href="/" aria-label="The Onsherpa home">
         <img src="/assets/full-logo-black.svg" alt="The Onsherpa" />
@@ -37,6 +38,7 @@ const pathname = Astro.url.pathname;
             <a
               href={item.href}
               class:list={[pathname === item.href && "is-active"]}
+              aria-current={pathname === item.href ? "page" : undefined}
             >
               {item.label}
             </a>
@@ -45,21 +47,20 @@ const pathname = Astro.url.pathname;
       </nav>
       <a class="header-cta" href="/contact/">Book a free consultation now</a>
     </header>
-    <main>
+    <main id="main-content" tabindex="-1">
       <slot />
     </main>
     <footer class="site-footer">
-      <div>
-        <strong>The Onsherpa</strong>
-        <p>Onshape strategy, automation, migration, and custom FeatureScript.</p>
-      </div>
-      <nav aria-label="Footer navigation">
-        {
-          navItems.map((item) => (
-            <a href={item.href}>{item.label}</a>
-          ))
-        }
-      </nav>
+      <p>
+        © <span data-current-year>{new Date().getFullYear()}</span> The Onsherpa. All rights reserved.
+        <a href="/accessibility/">Accessibility</a>
+      </p>
     </footer>
+    <script>
+      const currentYear = document.querySelector("[data-current-year]");
+      if (currentYear) {
+        currentYear.textContent = String(new Date().getFullYear());
+      }
+    </script>
   </body>
 </html>

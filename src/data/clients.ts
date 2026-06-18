@@ -12,6 +12,7 @@ export const clientLogos: ClientLogo[] = [
   { name: "Google", logo: "/clients/Google.svg" },
   { name: "Griffin", logo: "/clients/Griffin.svg" },
   { name: "LP", logo: "/clients/LP.svg" },
+  { name: "Onshape", logo: "/clients/Onshape.svg" },
   { name: "Smile Direct Club", logo: "/clients/Smile Direct Club.svg" },
   { name: "Sonos", logo: "/clients/Sonos.svg" },
   { name: "Tesla", logo: "/clients/Tesla.svg" },

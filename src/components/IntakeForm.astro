@@ -1,49 +1,37 @@
 <form class="intake-form" data-intake-form>
   <div class="form-grid">
-    <label>
-      <span>Name</span>
-      <input name="name" autocomplete="name" required />
+    <label for="firstName">
+      <span>First name <span aria-hidden="true">*</span></span>
+      <input id="firstName" name="firstName" autocomplete="given-name" required />
     </label>
-    <label>
-      <span>Email</span>
-      <input name="email" type="email" autocomplete="email" required />
+    <label for="lastName">
+      <span>Last name <span aria-hidden="true">*</span></span>
+      <input id="lastName" name="lastName" autocomplete="family-name" required />
     </label>
-    <label>
-      <span>Company</span>
-      <input name="company" autocomplete="organization" />
+    <label for="email">
+      <span>Email <span aria-hidden="true">*</span></span>
+      <input id="email" name="email" type="email" autocomplete="email" required />
     </label>
-    <label>
-      <span>Role</span>
-      <input name="role" autocomplete="organization-title" />
+    <label for="company">
+      <span>Company name</span>
+      <input id="company" name="company" autocomplete="organization" />
     </label>
-    <label>
-      <span>What do you need help with?</span>
-      <select name="need" required>
-        <option value="">Select one</option>
-        <option>Onshape migration</option>
-        <option>Custom FeatureScript</option>
-        <option>Team workflow and standards</option>
-        <option>Model performance</option>
-        <option>Not sure yet</option>
-      </select>
+    <label for="phone">
+      <span>Phone</span>
+      <input id="phone" name="phone" type="tel" autocomplete="tel" />
     </label>
-    <label>
-      <span>Timeline</span>
-      <select name="timeline">
-        <option>Soon</option>
-        <option>This month</option>
-        <option>This quarter</option>
-        <option>Exploring options</option>
-      </select>
+    <label for="onshapeTeamSize">
+      <span>Number of Full Onshape Seats</span>
+      <input id="onshapeTeamSize" name="onshapeTeamSize" type="number" inputmode="numeric" min="0" step="1" />
     </label>
   </div>
-  <label>
-    <span>What is going on?</span>
-    <textarea name="message" rows="6" required></textarea>
+  <label for="message">
+    <span>What’s on your mind? <span aria-hidden="true">*</span></span>
+    <textarea id="message" name="message" rows="6" required aria-describedby="form-required-note"></textarea>
   </label>
-  <input name="source" type="hidden" value="theonsherpa.com contact form" />
-  <button class="button button-primary" type="submit">Send intake</button>
-  <p class="form-status" data-form-status role="status"></p>
+  <p class="form-note" id="form-required-note">Fields marked with an asterisk are required.</p>
+  <button class="button button-primary" type="submit">Submit</button>
+  <p class="form-status" data-form-status role="status" aria-live="polite"></p>
 </form>
 
 <script>

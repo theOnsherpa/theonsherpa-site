@@ -1,44 +1,276 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const services = [
+  {
+    eyebrow: "Onshape Director",
+    title: "Coaching for Teams",
+    price: "Starting at $7,000/month",
+    description:
+      "Strategic leadership and hands-on guidance for teams that need to get more out of Onshape without slowing down the work already in motion.",
+    outcomes: [
+      "Clear CAD plans - Kick off projects with a team planning session.",
+      "Regular team meetings - Align, unblock, and upskill.",
+      "The right ways of working - Find the right way to do what you do.",
+      "Your Onshape Playbook - “How we do things around here” via SOPs and examples.",
+      "Accountability - Work review to keep CAD quality high and consistent.",
+      "On-call expertise - Help right when you need it.",
+    ],
+  },
+  {
+    eyebrow: "Automation",
+    title: "Custom FeatureScript Development",
+    price: "Starting at $5,000+",
+    description:
+      "Optimize your CAD for your product. FeatureScript can turn repetitive modeling steps, funky workarounds, and impossible-without-code geometry into reusable Onshape tools.",
+    outcomes: ["A custom Onshape feature ready to deploy on projects."],
+    link: {
+      href: "/custom-features/",
+      label: "See free open-source features",
+    },
+  },
+  {
+    eyebrow: "Tailored support",
+    title: "What else do you need?",
+    price: "Starting at $3,000+",
+    description:
+      "Sometimes the right answer is more specific: a custom lunch-and-learn, a model review under NDA, a focused workflow audit, or a short engagement around one stubborn problem.",
+    outcomes: [
+      "A scoped plan for the specific Onshape challenge in front of your team.",
+      "A practical next step instead of a generic consulting package.",
+    ],
+  },
+];
+
+const splitDeliverable = (outcome: string) => {
+  const [label, ...details] = outcome.split(" - ");
+
+  return details.length
+    ? { label, detail: details.join(" - ") }
+    : { label: "", detail: outcome };
+};
 ---
 
 <BaseLayout
   title="Services | The Onsherpa"
-  description="Onshape migration, team standards, model performance, and custom FeatureScript services."
+  description="Onshape coaching for teams, custom FeatureScript development, and tailored consulting for teams building in Onshape."
 >
-  <section class="page-hero compact">
-    <p class="eyebrow">Services</p>
-    <h1>Practical help for teams building in Onshape</h1>
+  <section class="services-hero">
+    <div class="services-hero-copy">
+      <p class="eyebrow">Services</p>
+      <h1>
+        Your team has a unique need.
+        <span>You need a unique solution.</span>
+      </h1>
+      <p>
+        With experience in hiring teams, running projects, doing CAD, writing
+        custom features, and developing workflows, The Onsherpa improves your
+        people, process, and tools.
+      </p>
+      <div class="page-actions">
+        <a class="button button-primary" href="/contact/">Book a free consultation now</a>
+      </div>
+    </div>
+    <aside class="services-venn" aria-label="The Onsherpa improves people, process, and tools">
+      <svg viewBox="0 0 620 560" role="img" aria-labelledby="services-venn-title services-venn-description">
+        <title id="services-venn-title">People, Process, and Tools Venn diagram</title>
+        <desc id="services-venn-description">
+          Three overlapping circles labeled people, process, and tools, with The Onsherpa logo at the center.
+        </desc>
+        <g class="venn-circle venn-people" data-venn-circle data-base-x="306" data-base-y="204" data-phase="0.2">
+          <path class="venn-orb" data-venn-orb data-radius="178" />
+          <text data-venn-label data-label-rotation="0" x="0" y="-138" text-anchor="middle">people</text>
+        </g>
+        <g class="venn-circle venn-process" data-venn-circle data-base-x="248" data-base-y="326" data-phase="2.1">
+          <path class="venn-orb" data-venn-orb data-radius="178" />
+          <text class="venn-side-label" data-venn-label data-label-rotation="60" x="-122" y="70" text-anchor="middle">process</text>
+        </g>
+        <g class="venn-circle venn-tools" data-venn-circle data-base-x="364" data-base-y="326" data-phase="4.4">
+          <path class="venn-orb" data-venn-orb data-radius="178" />
+          <text class="venn-side-label" data-venn-label data-label-rotation="-60" x="122" y="70" text-anchor="middle">tools</text>
+        </g>
+        <g class="venn-logo">
+          <image href="/assets/White%20logo%20stacked.svg" x="224" y="218" width="164" height="124" />
+        </g>
+      </svg>
+    </aside>
+  </section>
+
+  <section class="services-intro" aria-labelledby="services-intro-heading">
+    <p class="section-kicker">What I do</p>
+    <h2 id="services-intro-heading">Practical Onshape help where teams get stuck</h2>
     <p>
-      Focused consulting for teams that want to move faster, build cleaner
-      models, and turn repeated CAD friction into repeatable systems.
+      The best engagement depends on what is actually costing your team time:
+      unclear practices, migration friction, repetitive modeling, slow models,
+      or a toolset that needs to be shaped around your product.
     </p>
   </section>
 
-  <section class="service-stack">
-    <article>
-      <span>Migration</span>
-      <h2>Onshape adoption and migration</h2>
+  <section class="services-offers" aria-label="Service options">
+    {
+      services.map((service) => (
+        <article class="service-offer">
+          <div class="service-offer-heading">
+            <p class="section-kicker">{service.eyebrow}</p>
+            <h2>{service.title}</h2>
+            <p class="service-price">{service.price}</p>
+          </div>
+          <div class="service-offer-body">
+            <p>{service.description}</p>
+            {service.link && (
+              <a class="inline-link" href={service.link.href}>
+                {service.link.label}
+              </a>
+            )}
+          </div>
+          <div class="service-deliverables">
+            <h3>What you get</h3>
+            <ul>
+              {service.outcomes.map((outcome) => {
+                const deliverable = splitDeliverable(outcome);
+
+                return (
+                  <li>
+                    {deliverable.label && <strong>{deliverable.label}</strong>}
+                    {deliverable.label ? ` - ${deliverable.detail}` : deliverable.detail}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <div class="service-offer-action">
+            <a class="button button-primary" href="/contact/">Book a free consultation now</a>
+          </div>
+        </article>
+      ))
+    }
+  </section>
+
+  <section class="service-cta">
+    <div>
+      <p class="section-kicker">Start with clarity</p>
+      <h2>Not sure which one fits?</h2>
       <p>
-        Migrate your people, practices, and modeling habits into Onshape with
-        less drag and more confidence.
+        That is what the consultation is for. We will look at what is slowing
+        your team down, define what success should look like, and map the
+        simplest useful path from here.
       </p>
-    </article>
-    <article>
-      <span>Automation</span>
-      <h2>Custom FeatureScript</h2>
-      <p>
-        Build custom features that compress tedious modeling steps into tools
-        your team can reuse.
-      </p>
-    </article>
-    <article>
-      <span>Systems</span>
-      <h2>Workflow and standards</h2>
-      <p>
-        Establish cohesive practices around data organization, modeling
-        conventions, performance, and team collaboration.
-      </p>
-    </article>
+    </div>
+    <a class="button button-primary" href="/contact/">Book a free consultation now</a>
   </section>
 </BaseLayout>
+
+<script>
+  const vennGraphic = document.querySelector(".services-venn");
+  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (vennGraphic instanceof HTMLElement) {
+    const circles = [...vennGraphic.querySelectorAll("[data-venn-circle]")]
+      .filter((circle): circle is SVGGElement => circle instanceof SVGGElement)
+      .map((circle, index) => {
+        const orb = circle.querySelector("[data-venn-orb]");
+        const label = circle.querySelector("[data-venn-label]");
+
+        return {
+          baseX: Number(circle.dataset.baseX),
+          baseY: Number(circle.dataset.baseY),
+          circle,
+          index,
+          label: label instanceof SVGTextElement ? label : null,
+          labelBaseRotation: label instanceof SVGTextElement ? Number(label.dataset.labelRotation) : 0,
+          labelX: label instanceof SVGTextElement ? Number(label.getAttribute("x")) : 0,
+          labelY: label instanceof SVGTextElement ? Number(label.getAttribute("y")) : 0,
+          orb: orb instanceof SVGPathElement ? orb : null,
+          phase: Number(circle.dataset.phase),
+          radius: orb instanceof SVGPathElement ? Number(orb.dataset.radius) : 0,
+        };
+      });
+    const start = performance.now();
+    let lastShapeDraw = 0;
+    const shapeFrameMs = 1000 / 24;
+
+    const buildOrganicCirclePath = (
+      radius: number,
+      time: number,
+      phase: number,
+      index: number,
+      animated: boolean,
+    ) => {
+      const points = 96;
+      let path = "";
+
+      for (let i = 0; i < points; i += 1) {
+        const angle = (i / points) * Math.PI * 2;
+        const ripple = animated
+          ? Math.sin(angle * 3 + time * 0.62 + phase) * 2.8 +
+            Math.sin(angle * 5 - time * 0.47 + phase * 1.7) * 1.7 +
+            Math.sin(angle * 7 + time * 0.29 + index) * 1.05
+          : 0;
+        const x = Math.cos(angle) * (radius + ripple);
+        const y = Math.sin(angle) * (radius + ripple);
+        path += `${i === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)} `;
+      }
+
+      return `${path}Z`;
+    };
+
+    const drawOrganicCircles = (elapsed = 0, animated = false) => {
+      circles.forEach(({ index, orb, phase, radius }) => {
+        if (!orb) return;
+
+        orb.setAttribute("d", buildOrganicCirclePath(radius, elapsed, phase, index, animated));
+      });
+    };
+
+    const rotateLabels = (elapsed = 0, animated = false) => {
+      circles.forEach(({ index, label, labelBaseRotation, labelX, labelY, phase }) => {
+        if (!label) return;
+
+        const wobble = animated
+          ? Math.sin(elapsed * (0.46 + index * 0.05) + phase) * 3.2 +
+            Math.sin(elapsed * 0.21 + phase * 1.8) * 1.1
+          : 0;
+
+        label.setAttribute("transform", `rotate(${(labelBaseRotation + wobble).toFixed(2)} ${labelX} ${labelY})`);
+      });
+    };
+
+    circles.forEach(({ circle }) => {
+      circle.style.transformBox = "fill-box";
+      circle.style.transformOrigin = "center";
+    });
+
+    drawOrganicCircles();
+    rotateLabels();
+
+    if (motionQuery.matches) {
+      circles.forEach(({ baseX, baseY, circle }) => {
+        circle.setAttribute("transform", `translate(${baseX} ${baseY})`);
+      });
+    } else {
+      const animateVenn = (time: number) => {
+        const elapsed = (time - start) / 1000;
+
+        circles.forEach(({ baseX, baseY, circle, index, phase }) => {
+          const driftX = Math.sin(elapsed * (0.34 + index * 0.035) + phase) * 7.6;
+          const driftY = Math.cos(elapsed * (0.28 + index * 0.04) + phase) * 6.8;
+
+          circle.setAttribute(
+            "transform",
+            `translate(${(baseX + driftX).toFixed(2)} ${(baseY + driftY).toFixed(2)})`,
+          );
+        });
+
+        if (time - lastShapeDraw > shapeFrameMs) {
+          drawOrganicCircles(elapsed, true);
+          lastShapeDraw = time;
+        }
+
+        rotateLabels(elapsed, true);
+        requestAnimationFrame(animateVenn);
+      };
+
+      requestAnimationFrame(animateVenn);
+    }
+  }
+</script>
