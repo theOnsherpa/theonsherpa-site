@@ -10,7 +10,7 @@ const allTags = [
     .filter((tag) => tag !== featuredTag)
     .sort((a, b) => a.localeCompare(b)),
 ];
-const featuredCount = featureLinks.filter((feature) => feature.tags.includes(featuredTag)).length;
+const featureCount = featureLinks.length;
 ---
 
 <section class="feature-directory">
@@ -24,22 +24,23 @@ const featuredCount = featureLinks.filter((feature) => feature.tags.includes(fea
   <div class="feature-filter" data-feature-filter>
     <div>
       <span class="feature-filter-label">Filter by tag</span>
-      <p data-feature-count aria-live="polite">{featuredCount} features shown</p>
+      <p data-feature-count aria-live="polite">{featureCount} features shown</p>
     </div>
-    <div class="feature-filter-tags" aria-label="Feature filters">
-      <button type="button" data-filter-reset aria-pressed="false">All</button>
-      {
-        allTags.map((tag) => (
-          <button
-            class:list={[tag === featuredTag && "is-active"]}
-            type="button"
-            data-filter-tag={tag}
-            aria-pressed={tag === featuredTag ? "true" : "false"}
-          >
-            {tagLabel(tag)}
-          </button>
-        ))
-      }
+    <div class="feature-filter-controls">
+      <label class="feature-search">
+        <span class="sr-only">Search custom features</span>
+        <input type="search" placeholder="Search features" autocomplete="off" data-feature-search />
+      </label>
+      <div class="feature-filter-tags" aria-label="Feature filters">
+        <button class="is-active" type="button" data-filter-reset aria-pressed="true">All</button>
+        {
+          allTags.map((tag) => (
+            <button type="button" data-filter-tag={tag} aria-pressed="false">
+              {tagLabel(tag)}
+            </button>
+          ))
+        }
+      </div>
     </div>
   </div>
 
@@ -54,6 +55,7 @@ const featuredCount = featureLinks.filter((feature) => feature.tags.includes(fea
           aria-label={`Open ${feature.name} in Onshape (opens in a new tab)`}
           data-feature-card
           data-tags={feature.tags.join("|")}
+          data-search={`${feature.name} ${feature.summary} ${feature.tags.map(tagLabel).join(" ")}`.toLowerCase()}
         >
           <div class="feature-media">
             {
@@ -96,7 +98,7 @@ const featuredCount = featureLinks.filter((feature) => feature.tags.includes(fea
     }
   </div>
   <p class="feature-empty" data-feature-empty hidden>
-    No features match those tags yet. Try fewer filters.
+    No features match your search or filters. Try a broader search or fewer tags.
   </p>
 </section>
 
@@ -106,11 +108,12 @@ const featuredCount = featureLinks.filter((feature) => feature.tags.includes(fea
   if (filters instanceof HTMLElement) {
     const tagButtons = [...filters.querySelectorAll("[data-filter-tag]")];
     const resetButton = filters.querySelector("[data-filter-reset]");
+    const searchInput = filters.querySelector("[data-feature-search]");
     const count = filters.querySelector("[data-feature-count]");
     const cards = [...document.querySelectorAll("[data-feature-card]")];
     const sections = [...document.querySelectorAll("[data-feature-section]")];
     const empty = document.querySelector("[data-feature-empty]");
-    const activeTags = new Set<string>(["Highlight feature"]);
+    const activeTags = new Set<string>();
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const syncPreviewMotion = () => {
@@ -125,12 +128,16 @@ const featuredCount = featureLinks.filter((feature) => feature.tags.includes(fea
 
     const updateFilters = () => {
       let visibleCount = 0;
+      const searchTerm =
+        searchInput instanceof HTMLInputElement ? searchInput.value.trim().toLowerCase() : "";
 
       cards.forEach((card) => {
         if (!(card instanceof HTMLElement)) return;
         const cardTags = (card.dataset.tags || "").split("|");
-        const matches =
+        const matchesTags =
           activeTags.size === 0 || cardTags.some((tag) => activeTags.has(tag));
+        const matchesSearch = !searchTerm || (card.dataset.search || "").includes(searchTerm);
+        const matches = matchesTags && matchesSearch;
         card.hidden = !matches;
         if (matches) visibleCount += 1;
       });
@@ -183,6 +190,8 @@ const featuredCount = featureLinks.filter((feature) => feature.tags.includes(fea
       activeTags.clear();
       updateFilters();
     });
+
+    searchInput?.addEventListener("input", updateFilters);
 
     reduceMotion.addEventListener("change", syncPreviewMotion);
     syncPreviewMotion();
