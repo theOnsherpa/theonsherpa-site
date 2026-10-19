@@ -13,10 +13,25 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <h1>Tell me what is slowing your team down.</h1>
       <p>
         Share a little context about your Onshape setup, the friction you are
-        seeing, and what kind of help would be useful. Submissions go directly
-        into the Notion CRM behind the scenes.
+        seeing, and what kind of help would be useful.
+      </p>
+      <p>
+        <em>
+          This form is for business inquiries, and other topics may not get a reply.
+          <br />
+          If you have an Onshape question, please ask it on the public
+          <a href="https://forum.onshape.com/">Onshape Forum</a> and tag @EvanReese
+          in the message body.
+        </em>
       </p>
     </div>
     <IntakeForm />
   </section>
 </BaseLayout>
+
+<style>
+  .contact-copy a {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+</style>
