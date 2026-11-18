@@ -1,6 +1,7 @@
 export interface WorkshopTopic {
   title: string;
   description: string;
+  quote?: { text: string; attribution: string };
   gallery?: "strip";
   video?: { src: string; poster: string; label: string };
   images: { src: string; alt: string; caption?: string }[];
@@ -10,13 +11,13 @@ export interface WorkshopTopic {
 export const workshopTopics: WorkshopTopic[] = [
   {
     title: "Branching and Merging",
-    description: "Master one of Onshape's most powerful capabilities for design exploration and team collaboration.",
+    description: "Master one of Onshape's most powerful capabilities for design exploration and team collaboration.  by the end of this workshop attendees will know how to version, branch, and predict the effects of a merge. They will also have a clear understanding of the best ways to collaborate with others using branches for development work.",
     video: { src: "/workshops/web/branching-merging.mp4", poster: "/workshops/web/branching-merging.webp", label: "Onshape branching and merging workflow demonstration" },
     images: [],
   },
   {
     title: "Levels of Rigor",
-    description: 'Sometimes your models should "suck" and sometimes they need to be squeaky clean. Understand and get on the same page about what kind of CAD to build based on your current project phase, and the jobs the CAD model has to do.',
+    description: 'this is one of the most important concepts I can share for effective teamwork and smooth product development projects. Sometimes your models should "suck" and sometimes they need to be squeaky clean. Get on the same page about what kind of CAD to build based on your current project phase, and the jobs the CAD model has to do.',
     images: [{
       src: "/workshops/project-stages.svg",
       alt: "Project stages: explore problems by asking What if? and What matters? Explore solutions by asking How might we? and Should we? Establish a design vision, then execute through EVT, DVT, PVT, and Production as risk, commitment, and clarity increase. Modeling emphasis shifts from speed to rigor.",
@@ -24,7 +25,7 @@ export const workshopTopics: WorkshopTopic[] = [
   },
   {
     title: "FeatureScript Fundamentals for Vibe Coders",
-    description: "Understand some of the nuances of FeatureScript that will make you a more efficient feature architect, prompter, and reviewer.",
+    description: "AI has lowered the barrier to entry for making custom features in Onshape, but there are some fundamental FeatureScript concepts that will greatly improve the quality and stability of your features. Understand some of the nuances of FeatureScript like that will make you a more efficient feature architect, prompter, and reviewer. Concepts covered: Queries, IDs, Contexts, User Interface options, Editing Logic, Manupulator Change Functions, function libraries, and more.",
     images: [
       { src: "/workshops/web/featurescript-code.webp", alt: "FeatureScript code defining the inputs and behavior of an optics feature in Onshape." },
       { src: "/workshops/web/featurescript-example.webp", alt: "The optics feature in use, tracing light rays through a curved light pipe." },
@@ -45,7 +46,11 @@ export const workshopTopics: WorkshopTopic[] = [
   },
   {
     title: "Project Planning Session",
-    description: "Before embarking on a multi-month modeling journey, it's important to get clear on the strategy (especially as part of a team!). In this session we work to plan the flow of parametric data through a project, so you and your team can stay coordinated, divvy the work, and not get bogged down in the model as it inevitably accrues complexity. No battle was won according to plan, but no battle was won without one.",
+    quote: {
+      text: "No battle was won according to plan, but no battle was won without one.",
+      attribution: "Attributed to Dwight D. Eisenhower",
+    },
+    description: "Before embarking on a multi-month modeling journey, it's important to get clear on the strategy (especially as part of a team!). In this session we work to plan the flow of parametric data through a project, so you and your team can stay coordinated, divvy the work, and not get bogged down in the model as it inevitably accrues complexity.",
     images: [{
       src: "/workshops/web/project-planning.webp",
       alt: "Project data-flow diagram showing master variables and scaffolds feeding separate reel and pole documents, whose parts flow into the main assembly document.",

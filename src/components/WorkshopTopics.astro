@@ -9,6 +9,12 @@ import { workshopTopics } from "../data/workshops";
     <details>
       <summary>{topic.title}</summary>
       <div class="topic-content">
+        {topic.quote && (
+          <figure class="topic-quote">
+            <blockquote><p>&ldquo;{topic.quote.text}&rdquo;</p></blockquote>
+            <figcaption>{topic.quote.attribution}</figcaption>
+          </figure>
+        )}
         <p>{topic.description}</p>
         {topic.video && (
           <video controls muted playsinline loop preload="none" poster={topic.video.poster} aria-label={topic.video.label}>
@@ -53,6 +59,15 @@ import { workshopTopics } from "../data/workshops";
   figure:only-child { grid-column: 1 / -1; width: min(100%, 846px); }
   img { display: block; width: 100%; height: auto; border-radius: 6px; }
   figcaption { margin-top: 0.5rem; font-size: 0.95rem; }
+  .topic-quote {
+    border-left: 3px solid var(--brand-green);
+    padding: 0.4rem 0 0.4rem 1.25rem;
+    margin: 0 0 1.5rem;
+    max-width: 65ch;
+  }
+  .topic-quote blockquote { margin: 0; }
+  .topic-quote p { font-size: clamp(1.15rem, 2vw, 1.5rem); font-style: italic; margin: 0; }
+  .topic-quote figcaption { font-family: var(--font-sans); color: var(--ink-soft); font-size: 0.85rem; }
   @media (max-width: 620px) { .topic-images { grid-template-columns: 1fr; } }
   .topic-images-strip {
     display: flex;
