@@ -17,7 +17,7 @@ import { workshopTopics } from "../data/workshops";
         )}
         <p>{topic.description}</p>
         {topic.video && (
-          <video controls muted playsinline loop preload="none" poster={topic.video.poster} aria-label={topic.video.label}>
+          <video data-workshop-loop muted playsinline loop preload="none" poster={topic.video.poster} aria-label={topic.video.label}>
             <source src={topic.video.src} type="video/mp4" />
             <a href={topic.video.src}>Watch the branching and merging demonstration</a>
           </video>
@@ -36,6 +36,32 @@ import { workshopTopics } from "../data/workshops";
     </details>
   ))}
 </div>
+
+<script>
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  document.querySelectorAll<HTMLVideoElement>("video[data-workshop-loop]").forEach((video) => {
+    const details = video.closest("details");
+    let visible = false;
+    video.muted = true;
+
+    // Start only when visible, rather than letting autoplay load collapsed demos.
+    const syncPlayback = () => {
+      if (visible && details?.open && !document.hidden && !reducedMotion.matches) {
+        void video.play().catch(() => { /* Keep the poster if autoplay is blocked. */ });
+      } else {
+        video.pause();
+      }
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      syncPlayback();
+    });
+    observer.observe(video);
+    details?.addEventListener("toggle", syncPlayback);
+    reducedMotion.addEventListener("change", syncPlayback);
+    document.addEventListener("visibilitychange", syncPlayback);
+  });
+</script>
 
 <style>
   .workshop-topics { grid-column: 1 / -1; min-width: 0; }
