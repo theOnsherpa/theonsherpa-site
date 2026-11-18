@@ -29,6 +29,9 @@ export const workshopTopics: WorkshopTopic[] = [
   {
     title: "Project Planning Session",
     description: "Before embarking on a multi-month modeling journey, it's important to get clear on the strategy (especially as part of a team!). In this session we work to plan the flow of parametric data through a project, so you and your team can stay coordinated, divvy the work, and not get bogged down in the model as it inevitably accrues complexity. No battle was won according to plan, but no battle was won without one.",
-    images: [],
+    images: [{
+      src: "/workshops/project-planning.png",
+      alt: "Project data-flow diagram showing master variables and scaffolds feeding separate reel and pole documents, whose parts flow into the main assembly document.",
+    }],
   },
 ];
