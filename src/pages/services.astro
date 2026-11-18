@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import WorkshopTopics from "../components/WorkshopTopics.astro";
 
 const services = [
   {
@@ -15,6 +16,19 @@ const services = [
       "Your Onshape Playbook - “How we do things around here” via SOPs and examples.",
       "Accountability - Work review to keep CAD quality high and consistent.",
       "On-call expertise - Help right when you need it.",
+    ],
+  },
+  {
+    eyebrow: "Private workshops",
+    title: "Private Onshape Workshops",
+    price: "Starting at $3,000",
+    description:
+      "Build your team's skills and shared approach to Onshape through focused, practical workshops. Each workshop includes two 90-minute sessions on one selected topic, combining presentations, live demos, hands-on exercises, and Q&A.",
+    workshops: true,
+    outcomes: [
+      "Two 90-minute sessions covering one selected topic.",
+      "Recordings can be made available to attendees for 30 days.",
+      "Sessions can be run under an NDA.",
     ],
   },
   {
@@ -53,7 +67,7 @@ const splitDeliverable = (outcome: string) => {
 
 <BaseLayout
   title="Services | The Onsherpa"
-  description="Onshape coaching for teams, custom FeatureScript development, and tailored consulting for teams building in Onshape."
+  description="Onshape coaching for teams, private workshops, custom FeatureScript development, and tailored consulting for teams building in Onshape."
 >
   <section class="services-hero">
     <div class="services-hero-copy">
@@ -117,6 +131,17 @@ const splitDeliverable = (outcome: string) => {
           </div>
           <div class="service-offer-body">
             <p>{service.description}</p>
+            {service.workshops && (
+              <div class="workshop-pricing">
+                <h3>Pricing by team size</h3>
+                <dl>
+                  <div><dt>Up to 10 participants</dt><dd>$3,000</dd></div>
+                  <div><dt>11-20 participants</dt><dd>$4,500</dd></div>
+                  <div><dt>21-30 participants</dt><dd>$6,000</dd></div>
+                </dl>
+                <p>Prices cover both sessions on one topic.</p>
+              </div>
+            )}
             {service.link && (
               <a class="inline-link" href={service.link.href}>
                 {service.link.label}
@@ -138,6 +163,7 @@ const splitDeliverable = (outcome: string) => {
               })}
             </ul>
           </div>
+          {service.workshops && <WorkshopTopics />}
           <div class="service-offer-action">
             <a class="button button-primary" href="/contact/">Book a free consultation now</a>
           </div>
@@ -159,6 +185,22 @@ const splitDeliverable = (outcome: string) => {
     <a class="button button-primary" href="/contact/">Book a free consultation now</a>
   </section>
 </BaseLayout>
+
+<style>
+  .workshop-pricing { margin-top: 1.5rem; }
+  .workshop-pricing h3 { font-size: 1.15rem; }
+  .workshop-pricing dl { margin: 1rem 0; }
+  .workshop-pricing dl div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.4rem 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .workshop-pricing dd { margin: 0; font-weight: 700; }
+  .workshop-pricing p { font-size: 0.95rem; }
+</style>
 
 <script>
   const vennGraphic = document.querySelector(".services-venn");

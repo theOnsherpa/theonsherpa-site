@@ -1,0 +1,49 @@
+---
+import { workshopTopics } from "../data/workshops";
+---
+
+<div class="workshop-topics">
+  <h3>Workshop topics</h3>
+  <p>Choose one topic for both sessions. Expand a topic to learn more.</p>
+  {workshopTopics.map((topic) => (
+    <details>
+      <summary>{topic.title}</summary>
+      <div class="topic-content">
+        <p>{topic.description}</p>
+        {topic.images.length > 0 && (
+          <div class="topic-images">
+            {topic.images.map((image) => (
+              <figure>
+                <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+                {image.caption && <figcaption>{image.caption}</figcaption>}
+              </figure>
+            ))}
+          </div>
+        )}
+      </div>
+    </details>
+  ))}
+</div>
+
+<style>
+  .workshop-topics { grid-column: 1 / -1; min-width: 0; }
+  details { border-bottom: 1px solid var(--line); }
+  details:first-of-type { border-top: 1px solid var(--line); }
+  summary {
+    padding: 1.25rem 0.5rem;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: clamp(1rem, 1.7vw, 1.25rem);
+  }
+  summary::marker { color: var(--brand-green-dark); }
+  summary:hover { background: rgba(96, 152, 101, 0.08); }
+  summary:focus-visible { outline: 2px solid var(--brand-green-dark); outline-offset: 3px; }
+  .topic-content { padding: 0 0.5rem 1.5rem; }
+  .topic-content > p { max-width: 75ch; margin: 0; }
+  .topic-images { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+  figure { margin: 0; }
+  img { display: block; width: 100%; height: auto; border-radius: 6px; }
+  figcaption { margin-top: 0.5rem; font-size: 0.95rem; }
+  @media (max-width: 620px) { .topic-images { grid-template-columns: 1fr; } }
+</style>
