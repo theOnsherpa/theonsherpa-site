@@ -11,7 +11,7 @@ export interface WorkshopTopic {
 export const workshopTopics: WorkshopTopic[] = [
   {
     title: "Branching and Merging",
-    description: "Master one of Onshape's most powerful capabilities for design exploration and team collaboration.  by the end of this workshop attendees will know how to version, branch, and predict the effects of a merge. They will also have a clear understanding of the best ways to collaborate with others using branches for development work.",
+    description: "Master one of Onshape's most powerful capabilities for design exploration and team collaboration. By the end of this workshop attendees will know how to version, branch, and predict the effects of a merge. They will also have a clear understanding of the best ways to collaborate with others using branches for development work.",
     video: { src: "/workshops/web/branching-merging.mp4", poster: "/workshops/web/branching-merging.webp", label: "Onshape branching and merging workflow demonstration" },
     images: [],
   },
